@@ -1,0 +1,60 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v2.2/ubuntu.16.04-x64",
+    "signature": "171b033561bc00007038476725b628b3faf1d57b"
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v2.2": {},
+    ".NETCoreApp,Version=v2.2/ubuntu.16.04-x64": {
+      "iFakeLocation/1.0.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "12.0.1",
+          "iMobileDevice-net": "1.2.77"
+        },
+        "runtime": {
+          "iFakeLocation.dll": {}
+        }
+      },
+      "iMobileDevice-net/1.2.77": {
+        "runtime": {
+          "lib/netcoreapp2.0/iMobileDevice-net.dll": {
+            "assemblyVersion": "1.2.0.0",
+            "fileVersion": "1.2.77.52199"
+          }
+        },
+        "native": {
+        }
+      },
+      "Newtonsoft.Json/12.0.1": {
+        "runtime": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "12.0.0.0",
+            "fileVersion": "12.0.1.22727"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "iFakeLocation/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "iMobileDevice-net/1.2.77": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-33hAUYo1crjAdUlr7X4CISlAgkn8CjkmqM+3Iss5G5K3mWcrlERHM3eS2m2Eu9r5XCNq4qS3epAtqqldqxAStQ==",
+      "path": "imobiledevice-net/1.2.77",
+      "hashPath": "imobiledevice-net.1.2.77.nupkg.sha512"
+    },
+    "Newtonsoft.Json/12.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jmVyoEyk0In8r+AObYQyFKVFm7uSRzE0XSHSbEtBJcZDMV6DqJoyB4FLcHwprPVhAh826so0db3DIKXVnpGoPA==",
+      "path": "newtonsoft.json/12.0.1",
+      "hashPath": "newtonsoft.json.12.0.1.nupkg.sha512"
+    }
+  }
+}

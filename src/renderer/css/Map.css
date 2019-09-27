@@ -1,0 +1,68 @@
+.Map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 15px;
+  height: 100%;
+  width: 100%;
+}
+
+.mapboxgl-map {
+   border-radius: 15px;
+}
+
+.phoneList {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  z-index: 1;
+  
+}
+
+.phoneList li {
+  display: flex;
+  justify-content: center;
+  background: #111111;
+  height: 40px;
+  width: 300px;
+  color: white;
+  border-radius: 20px;
+  border: 2px solid #ed1849;
+  margin: 0 0 20px 20px;
+}
+
+.phoneList li span {
+  margin: auto 0;
+  font-size: 13px;
+  font-weight: bold;
+}
+.phoneList li span.icon {
+  margin-right: 10px;
+}
+
+.Map button {
+  position: absolute;
+  top: 93%;
+  left: calc(50% - 100px);
+  margin: 0 auto;
+
+  background: #111111;
+  height: 40px;
+  width: 200px;
+  color: white;
+  border-radius: 20px;
+  border: 2px solid #ed1849;
+  outline: 0;
+  font-size: 13px;
+  font-weight: bold;
+  transition: ease-in-out .3s;
+}
+
+.Map button:hover {
+  left: calc(50% - 125px);
+  width: 250px;
+}
+
+.Map button:focus {
+  border-color: white;
+}

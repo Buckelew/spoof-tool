@@ -1,0 +1,57 @@
+.Nav {
+  background: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+.Nav ul,
+.Nav {
+  -webkit-app-region: drag;
+  border-radius: 15px 0 15px 0;
+}
+
+.Nav a,
+.Nav input {
+  -webkit-app-region: no-drag;
+}
+
+.Nav ul.menu {
+  height: 60px;
+  width: 800px;
+  background: #111111;
+  list-style: none;
+  display: flex;
+  align-content: center;
+}
+
+.Nav .menu li {
+  display: flex;
+}
+
+.Nav .menu li.controls {
+  width: 108px;
+}
+
+.Nav .menu li a {
+  margin: auto 10px; 
+}
+
+.Nav .search-box {
+  width: calc(60%);
+  border-bottom: 3px solid #ed1849;
+  border-right: 3px solid #ed1849;
+  border-radius: 0 0 15px 0;
+}
+
+.Nav .menu input {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 23px;
+  color: white;
+}
+
+.Nav .menu input::placeholder {
+  color: #b9b9b9;
+}
