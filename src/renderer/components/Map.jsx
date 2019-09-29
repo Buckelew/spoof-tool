@@ -1,14 +1,28 @@
 import React, { Component } from 'react';
 import ReactMapboxGl, { Layer, Feature } from "react-mapbox-gl";
-import Nav from './Nav';
 import '../css/Map.css';
 import request from 'request'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import Nav from './Nav';
+import Pin from './Pin';
 
 const Mapbox = ReactMapboxGl({
   accessToken: "pk.eyJ1IjoiYnVja2VsZXciLCJhIjoiY2swcGZneWt0MDBmNDNicGR1d3Npdnk3bSJ9.zgwy_iP6UWAOUfXNC1Njiw"
 });
+
+toast.configure({
+  autoClose: 8000,
+  position: 'bottom-right',
+  newestOnTop: true
+})
+
+const successOptions = { className: 'toast-success' }
+const infoOptions = { className: 'toast-info' }
+const errorOptions = { className: 'toast-error' }
 
 class Map extends Component {
   constructor(props) {
@@ -40,11 +54,11 @@ class Map extends Component {
           }
           else {
             this.setState({ setLocation: { disabled: true } });
-            alert('No devices found, make sure you trusted the computer on your phone.')
+            toast.error('No devices found, make sure you trusted the computer on your phone.', errorOptions)
           }
           this.setState({ devices: devicesArr });
         } catch (e) {
-          alert('Error fetching device list.')
+          toast.error('Error fetching device list.', errorOptions)
           console.log(e);
         }
       }
@@ -55,12 +69,47 @@ class Map extends Component {
     this.setState({ lat, lng, search: `${lat}, ${lng}` })
   }
 
+  getDownloadProgress(version, callback) {
+    let toastId = null;
+    toast.info('Downloading developer image for iOS ' + version, infoOptions)
+
+    request.post({
+      url: 'http://localhost:49215/get_progress',
+      body: version
+    }, (err, res, body) => {
+      if (err) return err;
+      else if (res) {
+        const r = JSON.parse(body);
+        if (r.error) {
+          toast.error(r.error, errorOptions)
+        } else if (r.done) {
+          toast.done(toast.id, successOptions)
+          toast.info('Finished download.', infoOptions)
+        } else {
+          if (toastId === null) {
+            toastId = toast('Download in Progress', {
+              progress: r.progress,
+              className: 'toast-info'
+            });
+          } else {
+            toast.update(toastId, {
+              progress: r.progress
+            })
+          }
+          setTimeout(function () {
+            this.getDownloadProgress(version, callback());
+          }, 250);
+        }
+      }
+    })
+  }
+
   hasDependencies = (dev, callback) => {
     try {
       request.post({
-        url: 'http://localhost:49221/has_dependencies',
-        headers: { 'Content-Type': 'application/json' },
-        form: { udid: dev.udid }
+        url: 'http://localhost:49215/has_dependencies',
+        body: JSON.stringify({ udid: dev.udid }),
+        headers: { 'Content-Type': 'application/json' }
       }, (err, res, body) => {
         if (err) {
           console.log(err);
@@ -68,18 +117,21 @@ class Map extends Component {
         }
         else if (body) {
           const r = JSON.parse(body);
-          if (r.result) {
+          if (r.error) {
+            toast.error(r.error, errorOptions)
+          } else if (r.result) {
             return callback(true);
           } else {
-            this.getDownloadProgress(r.version, function () {
+            this.getDownloadProgress(r.version, () => {
               return callback(true);
-            });
+            })
           }
+
         }
       })
     } catch (e) {
       console.log(e);
-      alert('Error getting dependencies')
+      toast.error('Error getting dependencies', errorOptions)
       return callback();
     }
   }
@@ -96,21 +148,73 @@ class Map extends Component {
           request.post({
             url: 'http://localhost:49215/set_location',
             headers: { 'Content-Type': 'application/json' },
-            form: { udid: this.state.devices[0].udid, lat, lng }
+            body: JSON.stringify({ udid: this.state.devices[0].udid, lat, lng })
           }, (err, res, body) => {
             if (err) console.log(err);
             else if (body) {
-              alert('Successfully set devices location');
+              const result = JSON.parse(body);
+              if (result.error) {
+                if (result.error === 'Unable to mount developer image.') {
+                  toast.error('Unable to mount developer image, please make sure the device is unlocked.', errorOptions)
+                } else {
+                  toast.error(result.error, errorOptions)
+                }
+              } else {
+                toast.success(`Successfully set device's location`, successOptions);
+              }
             }
           });
         } catch (e) {
           console.log(e);
-          alert('Error setting device location');
+          toast.error('Error setting device location', errorOptions);
         }
       }
     })
 
 
+  }
+
+  stopPhoneLocation = () => {
+    const { lat, lng } = this.state;
+    console.log(this.state.devices[0]);
+
+    var dev = this.state.devices[0];
+    this.hasDependencies(dev, (success) => {
+      if (!success) console.log('Error getting dependencies');
+      else {
+        try {
+          request.post({
+            url: 'http://localhost:49215/stop_location',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ udid: this.state.devices[0].udid })
+          }, (err, res, body) => {
+            if (err) console.log(err);
+            else if (body) {
+              const result = JSON.parse(body);
+              if (result.error) {
+                if (result.error === 'Unable to mount developer image.') {
+                  toast.error('Unable to mount developer image, please make sure the device is unlocked.', errorOptions)
+                } else {
+                  toast.error(result.error, errorOptions)
+                }
+              } else {
+                toast.success(`Location spoof has stopped, if your location is stuck please restart your device.`, successOptions);
+              }
+            }
+          });
+        } catch (e) {
+          console.log(e);
+          toast.error('Error setting device location', errorOptions);
+        }
+      }
+    })
+
+
+  }
+
+  onDragEnd = (e) => {
+    const { lng, lat } = e.lngLat;
+    this.setState({ lng, lat })
   }
 
   render() {
@@ -135,11 +239,14 @@ class Map extends Component {
           <Layer
             type="symbol"
             id="marker"
-            layout={{ "icon-image": "marker-15" }}>
-            <Feature coordinates={[this.state.lng, this.state.lat]} draggable="true" />
+            layout={{ "icon-image": "marker-15" }} >
+            <Feature coordinates={[this.state.lng, this.state.lat]} draggable onDragEnd={this.onDragEnd} />
           </Layer>
         </Mapbox>
-        <button disabled={this.state.setLocation.disabled} id="setLocation" onClick={this.setPhoneLocation}>Set Location</button>
+        <div className="buttons">
+          <button disabled={this.state.setLocation.disabled} id="setLocation" onClick={this.setPhoneLocation}>Set Location</button>
+          <button disabled={this.state.setLocation.disabled} id="stopLocation" onClick={this.stopPhoneLocation}>Stop Location</button>\
+        </div>
       </div>
     )
   }

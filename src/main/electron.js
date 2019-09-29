@@ -1,7 +1,7 @@
 const electron = require("electron");
 const { app, BrowserWindow, Menu, globalShortcut } = electron;
 const path = require("path");
-const { exec } = require('child_process')
+const { execFile, exec } = require('child_process')
 const isDev = require("electron-is-dev");
 
 let mainWindow, iLocation;
@@ -43,14 +43,14 @@ app.on("ready", () => {
   // start location server
   if (process.platform === 'win32') {
     console.log(process.platform);
-    iLocation = exec(`"${__dirname}/set-location/win/iFakeLocation.exe"`, (err, stdout, stderr) => {
-      console.log('test1');
+    iLocation = execFile(path.join(__dirname, `/set-location/win/iFakeLocation.exe`), (err, data) => {
+      console.log(err);
+      console.log(data);
+      console.log(data.toString());
       if (err) console.log(err);
       else {
-        console.log('test');
-        console.log(err);
-        console.log(stdout);
-        console.log(stderr);
+        console.log(data);
+        console.log(data.toString());
       }
     })
   } else if (process.platform === 'darwin') {

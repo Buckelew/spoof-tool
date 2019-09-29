@@ -40,11 +40,20 @@
   margin-right: 10px;
 }
 
-.Map button {
+.Map .buttons {
+  top: 93%;
+  width: 100%;
   position: absolute;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.Map button {
   top: 93%;
   left: calc(50% - 100px);
-  margin: 0 auto;
+  margin: 0 30px;
 
   background: #111111;
   height: 40px;
@@ -65,4 +74,26 @@
 
 .Map button:focus {
   border-color: white;
+}
+
+
+/* TOAST */
+
+.toast-success {
+  background: lime;
+  border-radius: 15px;
+}
+
+.toast-error {
+  background: #ed1849;
+  color: white;
+  border: 1px solid #111111;
+  border-radius: 15px;
+}
+
+.toast-info {
+  background: #111111;
+  color: white;
+  border: #ed1849;
+  border-radius: 15px;
 }
