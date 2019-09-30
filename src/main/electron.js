@@ -13,14 +13,11 @@ require("update-electron-app")({
 
 function createWindow() {
 
-  // create menu
-  const menu = new Menu();
-  Menu.setApplicationMenu(menu);
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
     frame: false,
-    titleBarStyle: 'hidden',
+    // titleBarStyle: 'hidden',
     transparent: true,
     webPreferences: {
       webSecurity: false
@@ -42,19 +39,19 @@ app.on("ready", () => {
 
   // start location server
   if (process.platform === 'win32') {
-    console.log(process.platform);
     iLocation = execFile(path.join(__dirname, `/set-location/win/iFakeLocation.exe`), (err, data) => {
-      console.log(err);
-      console.log(data);
-      console.log(data.toString());
       if (err) console.log(err);
       else {
-        console.log(data);
         console.log(data.toString());
       }
     })
   } else if (process.platform === 'darwin') {
-
+    iLocation = exec('hdiutil attach ' + path.join(__dirname, `/set-location/mac/iFakeLocation.dmg`), (err, data) => {
+      if (err) console.log(err);
+      else {
+        console.log(data.toString());
+      }
+    })
   }
 });
 

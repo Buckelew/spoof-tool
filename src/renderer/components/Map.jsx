@@ -3,12 +3,11 @@ import ReactMapboxGl, { Layer, Feature } from "react-mapbox-gl";
 import '../css/Map.css';
 import request from 'request'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircle } from '@fortawesome/free-solid-svg-icons'
-import { ToastContainer, toast } from 'react-toastify';
+import { faCircle, faChessKing } from '@fortawesome/free-solid-svg-icons'
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Nav from './Nav';
-import Pin from './Pin';
 
 const Mapbox = ReactMapboxGl({
   accessToken: "pk.eyJ1IjoiYnVja2VsZXciLCJhIjoiY2swcGZneWt0MDBmNDNicGR1d3Npdnk3bSJ9.zgwy_iP6UWAOUfXNC1Njiw"
@@ -113,10 +112,12 @@ class Map extends Component {
       }, (err, res, body) => {
         if (err) {
           console.log(err);
+          alert(err)
           return callback();
         }
         else if (body) {
           const r = JSON.parse(body);
+          alert(r)
           if (r.error) {
             toast.error(r.error, errorOptions)
           } else if (r.result) {
@@ -138,11 +139,12 @@ class Map extends Component {
 
   setPhoneLocation = () => {
     const { lat, lng } = this.state;
-    console.log(this.state.devices[0]);
 
     var dev = this.state.devices[0];
     this.hasDependencies(dev, (success) => {
-      if (!success) console.log('Error getting dependencies');
+      if (!success) {
+        console.log('Error getting dependencies');
+      }
       else {
         try {
           request.post({
@@ -175,8 +177,6 @@ class Map extends Component {
   }
 
   stopPhoneLocation = () => {
-    const { lat, lng } = this.state;
-    console.log(this.state.devices[0]);
 
     var dev = this.state.devices[0];
     this.hasDependencies(dev, (success) => {
@@ -231,6 +231,7 @@ class Map extends Component {
           <li style={{ cursor: 'pointer' }} onClick={this.refreshDevices}><span>Refresh Phone List</span></li>
         </ul>
         <Mapbox
+          // eslint-disable-next-line
           style="mapbox://styles/mapbox/dark-v9"
           containerStyle={{
             height: "104vh",
@@ -245,7 +246,7 @@ class Map extends Component {
         </Mapbox>
         <div className="buttons">
           <button disabled={this.state.setLocation.disabled} id="setLocation" onClick={this.setPhoneLocation}>Set Location</button>
-          <button disabled={this.state.setLocation.disabled} id="stopLocation" onClick={this.stopPhoneLocation}>Stop Location</button>\
+          <button disabled={this.state.setLocation.disabled} id="stopLocation" onClick={this.stopPhoneLocation}>Stop Location</button>
         </div>
       </div>
     )
