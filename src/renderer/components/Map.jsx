@@ -69,8 +69,6 @@ class Map extends Component {
   }
 
   getDownloadProgress(version, callback) {
-    let toastId = null;
-    toast.info('Downloading developer image for iOS ' + version, infoOptions)
 
     request.post({
       url: 'http://localhost:49215/get_progress',
@@ -85,18 +83,9 @@ class Map extends Component {
           toast.done(toast.id, successOptions)
           toast.info('Finished download.', infoOptions)
         } else {
-          if (toastId === null) {
-            toastId = toast('Download in Progress', {
-              progress: r.progress,
-              className: 'toast-info'
-            });
-          } else {
-            toast.update(toastId, {
-              progress: r.progress
-            })
-          }
+          const that = this;
           setTimeout(function () {
-            this.getDownloadProgress(version, callback());
+            that.getDownloadProgress(version, callback);
           }, 250);
         }
       }
@@ -112,17 +101,16 @@ class Map extends Component {
       }, (err, res, body) => {
         if (err) {
           console.log(err);
-          alert(err)
           return callback();
         }
         else if (body) {
           const r = JSON.parse(body);
-          alert(r)
           if (r.error) {
             toast.error(r.error, errorOptions)
           } else if (r.result) {
             return callback(true);
           } else {
+            toast.info('Download in Progress')
             this.getDownloadProgress(r.version, () => {
               return callback(true);
             })
