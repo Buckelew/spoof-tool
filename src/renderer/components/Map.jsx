@@ -10,8 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Nav from "./Nav";
 
 const Mapbox = ReactMapboxGl({
-  accessToken:
-    "pk.eyJ1IjoiYnVja2VsZXciLCJhIjoiY2swcGZneWt0MDBmNDNicGR1d3Npdnk3bSJ9.zgwy_iP6UWAOUfXNC1Njiw",
+  accessToken: process.env.REACT_APP_MAPBOX_PRIVATE_KEY,
 });
 
 toast.configure({
